@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal News Desk</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <header class="main-header">
+            <div class="header-left">
+                <!-- Logo resembling the screenshot (Red arrow, newspaper) -->
+                <div class="logo-container">
+                    <img src="favicon.png" alt="Personal News Desk Logo" class="logo-svg" style="width: 60px; height: 60px; object-fit: contain;">
+                </div>
+                <div class="title-container">
+                    <div class="current-date" id="current-date">Loading date...</div>
+                    <h1 class="site-title">PERSONAL NEWS DESK</h1>
+                    <p class="site-subtitle">JUST HEADLINES. NO ADS. NO NOISE.</p>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="button-group top-row">
+                    <button class="nav-btn" id="btn-refresh">REFRESH</button>
+                    <button class="nav-btn" id="btn-sources">SOURCES</button>
+                    <button class="nav-btn" id="btn-font-minus">A-</button>
+                    <button class="nav-btn" id="btn-font-plus">A+</button>
+                    <button class="nav-btn" id="btn-settings">&#9881; SETTINGS</button>
+                </div>
+                <div class="button-group bottom-row">
+                    <button class="nav-btn" id="btn-about">ABOUT</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- STATUS BAR -->
+        <div class="status-bar">
+            <span id="status-message">Ready</span>
+            <span id="last-refresh">Last refresh: --</span>
+        </div>
+
+        <!-- TOP STORIES (HERO) -->
+        <section class="top-stories" id="top-stories-container">
+            <div class="loading">Fetching latest top stories...</div>
+            <!-- Top stories injected here -->
+        </section>
+
+        <!-- MAIN CONTENT COLUMNS -->
+        <main class="news-columns">
+            <!-- Column 1 -->
+            <div class="column" id="col-1"></div>
+
+            <!-- Column 2 -->
+            <div class="column" id="col-2"></div>
+
+            <!-- Column 3 (Cartoons & Columnists always at top) -->
+            <div class="column" id="col-3">
+                <div class="column-header" id="cartoons-header">
+                    <h2>POLITICAL CARTOONS</h2>
+                </div>
+                <div class="cartoons-container" id="cartoons-container">
+                    <div class="cartoon-placeholder">Loading...</div>
+                </div>
+
+                <div class="column-header" id="columnists-header" style="margin-top: 20px;">
+                    <h2>FOLLOWED COLUMNISTS</h2>
+                </div>
+                <div class="columnists-container" id="columnists-container">
+                    <div class="cartoon-placeholder">Loading columnists...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- My Sources Modal -->
+    <div id="sources-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>MY SOURCES</h2>
+                <button class="close-btn" id="btn-close-modal">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="add-source-section">
+                    <input type="text" id="new-source-name" placeholder="Source Name">
+                    <input type="text" id="new-source-url" placeholder="RSS/feed or Website URL">
+                    <button class="nav-btn" id="btn-add-source">Add Source</button>
+                </div>
+                
+                <div class="sources-list" id="sources-list-container">
+                    <!-- Dynamic source items go here -->
+                </div>
+
+                <div class="followed-authors-settings-grid" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                    <div class="fa-col-1">
+                        <h2 style="font-size: 1rem; color: var(--text-red);">Followed Authors</h2>
+                        <p style="font-size: 0.8rem; color: var(--text-main); margin-top: 5px;">Names added here appear in the Followed Authors section when feeds or source names match.</p>
+                    </div>
+                    <div class="fa-col-2">
+                        <input type="text" id="new-columnist-name" placeholder="Author Name (e.g. Thomas Sowell)" style="width: 100%; margin-bottom: 5px; background: transparent; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px;">
+                        <input type="text" id="new-columnist-url" placeholder="URL (e.g. https://www.tsowell2.com/)" style="width: 100%; margin-bottom: 5px; background: transparent; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px;">
+                        <button class="nav-btn" id="btn-add-columnist" style="width: 100%;">Add Author</button>
+                    </div>
+                    <div class="fa-col-3" id="columnists-list-container">
+                        <!-- Dynamic columnist items go here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="nav-btn" id="btn-cancel-modal" style="background: transparent; border: 1px solid var(--border-color);">Cancel</button>
+                <button class="nav-btn" id="btn-save-modal">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+        <!-- Theme Settings Modal -->
+    <div id="theme-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content theme-modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="close-btn" id="btn-close-theme-modal">&times;</button>
+            </div>
+            
+            <div class="modal-body theme-modal-body">
+                <div class="theme-section">
+                    <h3 class="theme-section-title">APPEARANCE MODE</h3>
+                    <div class="segmented-control">
+                        <button class="segment-btn active" id="btn-mode-light">Light</button>
+                        <button class="segment-btn" id="btn-mode-dark">Dark</button>
+                    </div>
+                </div>
+
+                <div class="theme-section">
+                    <h3 class="theme-section-title">COLOR SCHEMES</h3>
+                    <p class="theme-subtitle">Choose a palette; every scheme has separate light and dark colors.</p>
+                    <div class="themes-grid" id="themes-grid-container">
+                        <!-- Themes injected dynamically -->
+                    </div>
+                </div>
+
+                <div class="theme-section">
+                    <h3 class="theme-section-title">CUSTOM COLORS</h3>
+                    <p class="theme-subtitle">Changing any color switches to Custom for the current light or dark mode.</p>
+                    
+                    <div class="custom-colors-grid">
+                        <div class="color-picker-group">
+                            <label>Background</label>
+                            <input type="color" id="color-bg">
+                        </div>
+                        <div class="color-picker-group">
+                            <label>Surface</label>
+                            <input type="color" id="color-surface">
+                        </div>
+                        <div class="color-picker-group">
+                            <label>Raised Surface</label>
+                            <input type="color" id="color-border">
+                        </div>
+                        <div class="color-picker-group">
+                            <label>Text</label>
+                            <input type="color" id="color-text">
+                        </div>
+                        <div class="color-picker-group">
+                            <label>Accent / Links</label>
+                            <input type="color" id="color-accent">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer theme-modal-footer">
+                <button class="nav-btn" id="btn-reset-custom" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-main);">Reset Custom Colors</button>
+                <button class="nav-btn" id="btn-done-theme-modal" style="background: var(--link-hover); border: none; color: white;">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="themes.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+
