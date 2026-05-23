@@ -48,6 +48,14 @@ document.addEventListener('DOMContentLoaded', () => {
         aboutModal.style.display = 'none';
     });
 
+    const helpModal = document.getElementById('help-modal');
+    document.getElementById('btn-open-help').addEventListener('click', () => {
+        helpModal.style.display = 'flex';
+    });
+    document.getElementById('btn-close-help').addEventListener('click', () => {
+        helpModal.style.display = 'none';
+    });
+
     document.getElementById('btn-mode-light').addEventListener('click', () => {
         currentMode = 'light';
         currentThemeId = currentThemeId.replace('-dark', '-light');
