@@ -40,6 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-close-theme-modal').addEventListener('click', () => { themeModal.style.display = 'none'; });
     document.getElementById('btn-done-theme-modal').addEventListener('click', () => { themeModal.style.display = 'none'; });
 
+    const aboutModal = document.getElementById('about-modal');
+    document.getElementById('btn-about').addEventListener('click', () => {
+        aboutModal.style.display = 'flex';
+    });
+    document.getElementById('btn-close-about').addEventListener('click', () => {
+        aboutModal.style.display = 'none';
+    });
+
     document.getElementById('btn-mode-light').addEventListener('click', () => {
         currentMode = 'light';
         currentThemeId = currentThemeId.replace('-dark', '-light');
