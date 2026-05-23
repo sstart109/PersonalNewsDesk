@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     /* Dark Theme Variables */
     --bg-color: #0d0a0a;
     --panel-bg: #151111;
@@ -316,23 +316,106 @@ body {
 }
 
 @media (max-width: 768px) {
+    /* HEADER */
     .main-header {
         flex-direction: column;
         align-items: center;
         text-align: center;
-        gap: 20px;
+        gap: 15px;
+    }
+    
+    .logo-container img {
+        width: 45px !important;
+        height: 45px !important;
+    }
+    
+    .site-title {
+        font-size: 32px;
     }
     
     .header-right {
         align-items: center;
     }
     
+    .button-group {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .nav-btn {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+    
+    /* TOP STORIES */
+    .hero-article h2 {
+        font-size: 1.8rem;
+    }
+    
+    .sub-hero-article h3 {
+        font-size: 1.4rem;
+    }
+    
+    /* COLUMNS */
     .news-columns {
         grid-template-columns: 1fr;
     }
     
-    .hero-article h2 {
-        font-size: 2rem;
+    /* MODALS */
+    .modal-content {
+        width: 95%;
+        padding: 0;
+    }
+    
+    .modal-body {
+        padding: 15px;
+    }
+    
+    /* My Sources Modal */
+    .add-source-section {
+        flex-direction: column;
+    }
+    
+    .add-source-section input {
+        width: 100%;
+    }
+    
+    .followed-authors-settings-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .source-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .source-controls {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+    
+    .source-url {
+        max-width: 100%;
+        white-space: normal;
+        word-break: break-all;
+    }
+    
+    /* Theme Modal */
+    .custom-colors-grid {
+        justify-content: flex-start;
+    }
+    
+    .theme-modal-footer {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+    
+    .theme-modal-footer button {
+        width: 100%;
     }
 }
 
