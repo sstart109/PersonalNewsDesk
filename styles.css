@@ -322,11 +322,17 @@ body {
         align-items: center;
         text-align: center;
         gap: 15px;
+        padding-top: 15px;
+    }
+    
+    .header-left {
+        flex-direction: column;
+        gap: 10px;
     }
     
     .logo-container img {
-        width: 45px !important;
-        height: 45px !important;
+        width: 50px !important;
+        height: 50px !important;
     }
     
     .site-title {
@@ -334,17 +340,24 @@ body {
     }
     
     .header-right {
-        align-items: center;
+        width: 100%;
+        align-items: stretch;
+        gap: 8px;
     }
     
     .button-group {
+        display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        width: 100%;
+        gap: 8px;
     }
     
     .nav-btn {
-        padding: 8px 10px;
+        flex: 1 1 calc(33% - 8px);
+        padding: 10px 5px;
         font-size: 12px;
+        text-align: center;
     }
     
     /* TOP STORIES */
