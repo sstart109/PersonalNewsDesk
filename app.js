@@ -48,6 +48,17 @@ document.addEventListener('DOMContentLoaded', () => {
         aboutModal.style.display = 'none';
     });
 
+    const privacyModal = document.getElementById('privacy-modal');
+    document.getElementById('btn-privacy').addEventListener('click', () => {
+        privacyModal.style.display = 'flex';
+    });
+    document.getElementById('btn-close-privacy').addEventListener('click', () => {
+        privacyModal.style.display = 'none';
+    });
+    document.getElementById('btn-done-privacy').addEventListener('click', () => {
+        privacyModal.style.display = 'none';
+    });
+
     const helpModal = document.getElementById('help-modal');
     document.getElementById('btn-open-help').addEventListener('click', () => {
         helpModal.style.display = 'flex';
