@@ -697,13 +697,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const coveredByLinks = Array.from(cluster.sources).sort().map(s => {
                 const articleForSource = cluster.articles.find(a => a.source === s);
-                return `<a href="${articleForSource.link}" target="_blank">${s}</a>`;
+                return `<a href="${articleForSource.link}" target="_blank" rel="noopener noreferrer">${s}</a>`;
             }).join(', ');
 
             if (idx === 0) {
                 html += `
                     <div class="hero-article">
-                        <h2><a href="${repArticle.link}" target="_blank">${repArticle.title}</a></h2>
+                        <h2><a href="${repArticle.link}" target="_blank" rel="noopener noreferrer">${repArticle.title}</a></h2>
                         <div class="hero-covered-by">
                             COVERED BY: ${coveredByLinks}
                         </div>
@@ -712,7 +712,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 html += `
                     <div class="sub-hero-article" style="margin-top: 15px;">
-                        <h3><a href="${repArticle.link}" target="_blank">${repArticle.title}</a></h3>
+                        <h3><a href="${repArticle.link}" target="_blank" rel="noopener noreferrer">${repArticle.title}</a></h3>
                         <div class="hero-covered-by">
                             COVERED BY: ${coveredByLinks}
                         </div>
@@ -741,12 +741,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const latest = matchedArticles.sort((a, b) => b.pubDate - a.pubDate)[0];
                 html += `
                     <div class="columnist-item">
-                        <div class="columnist-name"><a href="${latest.link}" target="_blank">${colObj.name}</a></div>
+                        <div class="columnist-name"><a href="${latest.link}" target="_blank" rel="noopener noreferrer">${colObj.name}</a></div>
                         <div class="columnist-status">${new Date(latest.pubDate).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}</div>
                     </div>
                 `;
             } else {
-                const nameDisplay = colObj.url ? `<a href="${colObj.url}" target="_blank">${colObj.name}</a>` : colObj.name;
+                const nameDisplay = colObj.url ? `<a href="${colObj.url}" target="_blank" rel="noopener noreferrer">${colObj.name}</a>` : colObj.name;
                 html += `
                     <div class="columnist-item">
                         <div class="columnist-name">${nameDisplay}</div>
@@ -806,7 +806,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <img src="${c.src}" alt="${c.author} Cartoon" style="width: 100%; height: auto; object-fit: contain; border: 1px solid var(--border-color); border-radius: 4px;">
                         </a>
                         <div style="font-family: var(--font-ui); font-size: 0.85rem; font-weight: 600; color: var(--header-red); margin-top: auto;">
-                            <a href="${c.authorLink}" target="_blank" style="color: inherit; text-decoration: none;">${c.author}</a>
+                            <a href="${c.authorLink}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">${c.author}</a>
                         </div>
                         <div style="font-size: 0.75rem; color: var(--text-muted); display: none;">${c.date}</div>
                     </div>
@@ -971,7 +971,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let html = `
                 <div class="column-header" style="margin-top: ${colHasContent(src.column) ? '30px' : '0'};">
                     <span class="col-indicator" data-source-id="${src.id}" style="cursor: pointer;">${isCollapsed ? '+' : '-'}</span>
-                    <h2><a href="${siteUrl}" target="_blank" style="color: inherit; text-decoration: none;">${src.name.toUpperCase()}</a></h2>
+                    <h2><a href="${siteUrl}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">${src.name.toUpperCase()}</a></h2>
                 </div>
                 <div class="feed-content" id="feed-${src.id}" style="display: ${isCollapsed ? 'none' : 'block'};">
             `;
@@ -986,7 +986,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 html += initialList.map(article => `
                     <div class="feed-item">
-                        <h4><a href="${article.link}" target="_blank">${article.title}</a></h4>
+                        <h4><a href="${article.link}" target="_blank" rel="noopener noreferrer">${article.title}</a></h4>
                         <div class="feed-item-meta">
                             ${article.source} | ${formatTime(article.pubDate)}
                         </div>
@@ -997,7 +997,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     html += `<div class="hidden-stories" id="hidden-${src.id}" style="display: none;">`;
                     html += hiddenList.map(article => `
                         <div class="feed-item">
-                            <h4><a href="${article.link}" target="_blank">${article.title}</a></h4>
+                            <h4><a href="${article.link}" target="_blank" rel="noopener noreferrer">${article.title}</a></h4>
                             <div class="feed-item-meta">
                                 ${article.source} | ${formatTime(article.pubDate)}
                             </div>
