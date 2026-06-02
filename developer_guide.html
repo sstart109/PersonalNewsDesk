@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IllumiLib PersonalNewsDesk - Software Engineering Developer Guide</title>
+    
+    <!-- Google Fonts: All-serif typography per brand covenant -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Variables - Strict IllumiLib Palette Alignment */
+        :root {
+            --color-parchment: #F5E6C8;
+            --color-cream: #FDF6E3;
+            --color-shelf: #1A0F0A;
+            --color-gold: #C9A84C;
+            --color-gold-hover: #B8943E;
+            --color-gold-light: #E8C97A;
+            --color-brown-deep: #2C1810;
+            --color-beam: #FFF9F0;
+            --color-text-muted: #6B4C3B;
+            --color-border: #D4B896;
+            
+            --font-playfair: 'Playfair Display', Georgia, serif;
+            --font-lora: 'Lora', Garamond, serif;
+        }
+
+        /* General Layout */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--color-parchment);
+            color: var(--color-brown-deep);
+            font-family: var(--font-lora);
+            font-size: 16px;
+            line-height: 1.7;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar - Candlelighter styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--color-parchment);
+            border-left: 1px solid var(--color-border);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-border);
+            border: 2px solid var(--color-parchment);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-gold);
+        }
+
+        /* Sidebar Styling (Shelf-black bookshelf feel) */
+        aside {
+            width: 320px;
+            background-color: var(--color-shelf);
+            color: var(--color-beam);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid var(--color-gold);
+            z-index: 100;
+            transition: transform 0.3s ease-out;
+        }
+
+        .sidebar-header {
+            padding: 2.5rem 1.5rem 1.5rem 1.5rem;
+            border-bottom: 1px solid var(--color-text-muted);
+            text-align: center;
+        }
+
+        .wordmark {
+            font-family: var(--font-playfair);
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: var(--color-beam);
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        .wordmark span {
+            color: var(--color-gold);
+        }
+
+        .sidebar-subtitle {
+            font-family: var(--font-lora);
+            font-size: 0.8rem;
+            color: var(--color-gold);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .gold-divider {
+            width: 80px;
+            height: 1px;
+            background-color: var(--color-gold);
+            margin: 0.5rem auto 0 auto;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem 1rem;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--color-border);
+            text-decoration: none;
+            font-family: var(--font-lora);
+            font-size: 0.95rem;
+            border-left: 2px solid transparent;
+            transition: all 0.25s ease-out;
+        }
+
+        .sidebar-nav a:hover {
+            color: var(--color-gold);
+            background-color: rgba(44, 24, 16, 0.5);
+            border-left: 2px solid var(--color-gold-light);
+            padding-left: 1.25rem;
+        }
+
+        .sidebar-nav a.active {
+            color: var(--color-beam);
+            background-color: var(--color-brown-deep);
+            border-left: 2px solid var(--color-gold);
+            font-weight: 600;
+            padding-left: 1.25rem;
+        }
+
+        .sidebar-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--color-text-muted);
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--color-border);
+        }
+
+        .sidebar-footer a {
+            color: var(--color-gold);
+            text-decoration: none;
+        }
+        .sidebar-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Mobile Header Panel */
+        .mobile-header {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: var(--color-shelf);
+            color: var(--color-beam);
+            border-bottom: 1px solid var(--color-gold);
+            z-index: 99;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+        }
+
+        .mobile-toggle {
+            background: none;
+            border: 1px solid var(--color-gold);
+            color: var(--color-gold);
+            padding: 0.4rem 0.8rem;
+            font-family: var(--font-lora);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .mobile-toggle:hover {
+            background-color: var(--color-gold);
+            color: var(--color-shelf);
+        }
+
+        /* Main Content Container */
+        main {
+            margin-left: 320px;
+            width: calc(100% - 320px);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease-out;
+        }
+
+        /* Alternating Sections Structure */
+        section {
+            padding: 5rem 10% 5rem 10%;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            flex-direction: column;
+            max-width: 100%;
+        }
+
+        /* Section Background Alternations */
+        section:nth-of-type(odd) {
+            background-color: var(--color-parchment);
+        }
+
+        section:nth-of-type(even) {
+            background-color: var(--color-cream);
+        }
+
+        section.dark-cta {
+            background-color: var(--color-shelf);
+            color: var(--color-beam);
+            border-bottom: none;
+        }
+
+        section.dark-cta h2, section.dark-cta h3 {
+            color: var(--color-beam);
+        }
+
+        section.dark-cta p {
+            color: var(--color-border);
+        }
+
+        /* Typography Styles */
+        h1, h2, h3, h4 {
+            font-family: var(--font-playfair);
+            color: var(--color-brown-deep);
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background-color: var(--color-gold);
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--color-brown-deep);
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+            color: var(--color-brown-deep);
+        }
+
+        /* Eyebrow label per brand.md guidelines */
+        .eyebrow {
+            font-family: var(--font-lora);
+            color: var(--color-gold);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        /* Signature Six-Point Asterisk list style */
+        ul.brand-list {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        ul.brand-list li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.05rem;
+        }
+
+        ul.brand-list li::before {
+            content: '\2736'; /* Gold 6-point asterisk symbol */
+            position: absolute;
+            left: 0.25rem;
+            top: 0;
+            color: var(--color-gold);
+            font-size: 1.1rem;
+        }
+
+        /* Cards - Rigid, sharp corners, parchment page style */
+        .brand-card {
+            background-color: var(--color-cream);
+            border: 1px solid var(--color-border);
+            padding: 2rem;
+            margin: 1.5rem 0;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .brand-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--color-gold);
+        }
+
+        .brand-card h3 {
+            margin-top: 0;
+        }
+
+        /* Callout Box - Amber light warning style */
+        .brand-callout {
+            border-left: 4px solid var(--color-gold);
+            background-color: rgba(201, 168, 76, 0.08);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .brand-callout p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Code Block Styling - Strict Lora Italic per brand guide constraints */
+        code, pre {
+            font-family: var(--font-lora);
+        }
+
+        p code {
+            background-color: rgba(44, 24, 16, 0.06);
+            padding: 0.1rem 0.4rem;
+            color: var(--color-shelf);
+            font-style: italic;
+            font-size: 0.95em;
+        }
+
+        pre {
+            background-color: var(--color-cream);
+            border: 1px solid var(--color-border);
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            color: var(--color-brown-deep);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            border-left: 3px solid var(--color-gold);
+        }
+
+        pre code {
+            font-style: italic;
+            color: var(--color-brown-deep);
+        }
+
+        /* Table Styling - Clean Scholarly Grid */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        th {
+            font-family: var(--font-playfair);
+            font-weight: 700;
+            color: var(--color-brown-deep);
+            border-bottom: 2px solid var(--color-gold);
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(253, 246, 227, 0.5);
+        }
+
+        /* Primary Button Style - Sharp Rectangle */
+        .brand-button {
+            display: inline-block;
+            background-color: var(--color-gold);
+            color: var(--color-brown-deep) !important;
+            font-family: var(--font-lora);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0.8rem 1.8rem;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(44, 24, 16, 0.08);
+        }
+
+        .brand-button:hover {
+            background-color: var(--color-gold-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(44, 24, 16, 0.12);
+        }
+
+        .brand-button:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 992px) {
+            aside {
+                transform: translateX(-100%);
+            }
+
+            aside.open {
+                transform: translateX(0);
+            }
+
+            .mobile-header {
+                display: flex;
+            }
+
+            main {
+                margin-left: 0;
+                width: 100%;
+                padding-top: 60px;
+            }
+
+            section {
+                padding: 3rem 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR NAVIGATION (LEFT PANE) -->
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="wordmark">Illumi<span>lib</span></a>
+            <div class="sidebar-subtitle">Developer Desk</div>
+            <div class="gold-divider"></div>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="#architecture" class="active">1. Architectural Design</a></li>
+                <li><a href="#tech-stack">2. Technology Stack</a></li>
+                <li><a href="#tooling">3. VS Code & AI Tools</a></li>
+                <li><a href="#implementation">4. Engineering Core</a></li>
+                <li><a href="#build-flow">5. Build & Bundle Flow</a></li>
+                <li><a href="#release-flow">6. Release & Git Deploy</a></li>
+                <li><a href="#related-products">7. OCR Capture Companion</a></li>
+                <li><a href="#licensing">8. Legal & Licensing</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <p>IllumiLib Capture &copy; 2026</p>
+            <p><a href="https://sstart109.github.io/PersonalNewsDesk/">PersonalNewsDesk Hub</a></p>
+        </div>
+    </aside>
+
+    <!-- MOBILE HEADER PANEL -->
+    <div class="mobile-header">
+        <a href="#" class="wordmark" style="font-size: 1.4rem; margin-bottom: 0;">Illumi<span>lib</span></a>
+        <button class="mobile-toggle" id="menuToggle">Navigation</button>
+    </div>
+
+    <!-- MAIN RIGHT CONTENT PANE -->
+    <main>
+        
+        <!-- SECTION 1: ARCHITECTURE -->
+        <section id="architecture">
+            <div class="eyebrow">Project Foundation</div>
+            <h2>Architectural Design</h2>
+            
+            <p>The **IllumiLib PersonalNewsDesk** is engineered as a zero-infrastructure, client-side aggregator. It handles high-frequency, complex content harvesting entirely within the boundaries of the browser context. By discarding typical backend database architectures and API intermediary pipelines, the platform secures perfect user privacy, infinite direct scalability, and a deployment overhead footprint of exactly zero bytes.</p>
+            
+            <div class="brand-card">
+                <h3>Single-Page Client-Side Pipeline</h3>
+                <p>The core lifecycle of PersonalNewsDesk operates inside a single runtime sandbox. Upon loading, the system boots a modular framework written in raw JS that parses locally stored configurations, coordinates parallel requests to multiple feed streams via CORS gateways, runs data normalization filters, executes clustering algorithms, and renders an interactive grid interface in real-time.</p>
+            </div>
+
+            <h3>Core Architectural Decoupling</h3>
+            <p>The application breaks down architectural responsibility into four isolated logical domains:</p>
+            
+            <ul class="brand-list">
+                <li><strong>Configuration Layer:</strong> Governs default RSS feed listings, followed author preferences, appearance rules, custom theme definitions, and local storage state persistence.</li>
+                <li><strong>Harvesting & Proxy Pipeline:</strong> Implements a resilient gateway selector that multiplexes fetch actions through fallback proxy lists to bypass restrictive browser CORS locks.</li>
+                <li><strong>Natural Language Clustering Engine:</strong> Tokenizes story headlines in the client environment, filters noise words, and dynamically associates matching stories from disparate publishers into localized top-priority events.</li>
+                <li><strong>Dynamic DOM Rendering Loop:</strong> Coordinates low-latency UI repaints, font scaling actions, custom theme injection variables, and user-facing modals without introducing heavy framework runtimes.</li>
+            </ul>
+
+            <div class="brand-callout">
+                <p><strong>Design Choice Context:</strong> Decoupled client-side feed management was selected over centralized API processing to guarantee that user configurations, reading habits, and customized feed parameters remain local. This ensures the app can never be compromised by centralized server breaches or commercial usage audits.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: TECH STACK -->
+        <section id="tech-stack">
+            <div class="eyebrow">Technology Suite</div>
+            <h2>Technology Stack</h2>
+            
+            <p>To align with strict IllumiLib performance paradigms, the technology stack completely excludes complex web frameworks, runtime compilers, and commercial asset managers. This clean footprint ensures instantaneous load speeds, low memory bounds, and guaranteed execution longevity across diverse devices.</p>
+            
+            <h3>Core Engineering Footprint</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Layer</th>
+                        <th>Technology Chosen</th>
+                        <th>Engineering Rationale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Markup</strong></td>
+                        <td>Semantic HTML5</td>
+                        <td>Guarantees complete compatibility with native web engines, iframe containment boxes (such as Google Sites widgets), and search indexing architectures.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Styling</strong></td>
+                        <td>Vanilla CSS3 Custom Properties</td>
+                        <td>Bypasses CSS-in-JS overhead. Allows the application to execute micro-second theme swaps by altering DOM container variables dynamically.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Logic Engine</strong></td>
+                        <td>Modular ES6+ JavaScript</td>
+                        <td>Utilizes standard web APIs (`DOMParser`, `Fetch`, `IntersectionObserver`) to minimize memory footprints while executing parsing logic in parallel.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Persistence</strong></td>
+                        <td>Local Browser Storage</td>
+                        <td>Maintains offline persistence of feed listings, active/disabled statuses, customized colors, columns, and history without API authentication structures.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Why Frameworks Were Eliminated</h3>
+            <p>During architectural exploration, platforms like React, Next.js, and Tailwind CSS were evaluated and explicitly rejected for the following key reasons:</p>
+            
+            <ul class="brand-list">
+                <li><strong>Google Sites Container Constraints:</strong> Google Sites hosts custom embeds inside nested, sandbox-restricted `iframe` elements. Complex JavaScript frames or bundlers load slowly within these sandboxes and create runtime execution faults.</li>
+                <li><strong>Zero Dependency Lifecycle:</strong> External frameworks introduce dependency degradation. By relying exclusively on native DOM API calls, the codebase remains perfectly functional decades after its compile date.</li>
+                <li><strong>Strict Styling Isolation:</strong> Vanilla CSS allows pixel-perfect encapsulation of styles, protecting the interface layout from parent site inheritance bugs.</li>
+            </ul>
+        </section>
+
+        <!-- SECTION 3: TOOLING -->
+        <section id="tooling">
+            <div class="eyebrow">Development Workspace</div>
+            <h2>VS Code & AI Tools</h2>
+            
+            <p>The PersonalNewsDesk codebase is maintained inside **Visual Studio Code**, utilizing automated software agents powered by the Gemini/Claude AI coding assistant interface (**Claude Code / Antigravity**). This pair-programming toolchain combines rapid shell script actions with extreme, granular compliance checking.</p>
+
+            <div class="brand-card">
+                <h3>Collaborating with Antigravity / Claude Code</h3>
+                <p>When executing features or debugging feeds inside this workspace, developers interact directly with AI agents running in the local environment. The developer describes modifications, and the agent translates them into atomic, staged file edits.</p>
+            </div>
+
+            <h3>Operational Sandbox Guidelines</h3>
+            <p>Developers and AI systems must respect the following terminal constraints while working inside the workspace:</p>
+            
+            <ul class="brand-list">
+                <li><strong>Workspace Containment:</strong> All temporary files, mock feeds, and scripts must reside exclusively inside the active directory `c:\Users\steds\GoogleSiteNews`. Operating system folders or global temp structures must never be referenced.</li>
+                <li><strong>Non-Interactive Automation:</strong> Since shell environments operate programmatically during deployment, terminal executions must use non-interactive parameters (e.g., `npx -y` commands or silent shell flags).</li>
+                <li><strong>No Directory Hopping:</strong> The agent and developers do not execute `cd` commands in sequential pipeline steps. Working paths are declared explicitly as root-level parameters inside task tools.</li>
+            </ul>
+
+            <div class="brand-callout">
+                <p><strong>System Warning:</strong> AI operations execute under strict sandboxed system permissions. If an operation fails due to terminal blockages, developers must immediately invoke the `ask_permission` resource descriptor rather than implementing manual command overrides.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 4: IMPLEMENTATION -->
+        <section id="implementation">
+            <div class="eyebrow">Engineering Specifications</div>
+            <h2>Engineering Core</h2>
+            
+            <p>Understanding the inner mechanics of our parsing pipelines is vital for any engineer working to implement custom aggregators or add new feeds to the desk.</p>
+
+            <h3>1. CORS Proxy Fallback Multiplexing</h3>
+            <p>Browsers block cross-origin RSS requests by default due to strict Same-Origin Policies (SOP). PersonalNewsDesk circumvents this by passing raw feed URIs through an array of five public and semi-private CORS gateways in a recursive, self-healing loop. If a gateway returns a transport failure or HTTP lock, the parsing system automatically catches the exception and falls back to the next proxy:</p>
+
+            <pre><code>const proxies = [
+    { type: 'feed2json', url: 'https://feed2json.org/convert?url=' },
+    { type: 'rss2json', url: 'https://api.rss2json.com/v1/api.json?rss_url=' },
+    { type: 'corsproxy', url: 'https://corsproxy.io/?url=' },
+    { type: 'codetabs', url: 'https://api.codetabs.com/v1/proxy?quest=' },
+    { type: 'allorigins', url: 'https://api.allorigins.win/get?url=' }
+];</code></pre>
+
+            <h3>2. Handling Ad-Blocker Failures</h3>
+            <p>Commercial aggregators like `rss2json` are frequently flagged and blocked by aggressive tracking filters (e.g., uBlock Origin). To prevent the application from rendering blank columns or throwing loading errors, the parser detects parsing exceptions caused by network blocks and instantly routes requests to alternate proxies like `corsproxy.io` or Base64-encoded XML engines.</p>
+
+            <h3>3. Dynamic local storage Migrations</h3>
+            <p>When critical feed configurations or default source listings are modified (such as removing invalid sources like "The Gateway Pundit"), clients' browsers might continue rendering stale data stored in their local web caches. To trigger an automatic client-side purge without manual settings intervention, the application compares configuration versions:</p>
+
+            <pre><code>let sources = JSON.parse(localStorage.getItem('pnd_sources'));
+let sourcesVersion = localStorage.getItem('pnd_sources_version');
+
+if (!sources || sourcesVersion !== '7') {
+    // Dynamically clean structures and re-inject verified defaults
+    sources = defaultSources.filter(src => src.id !== 'gatewaypundit');
+    localStorage.setItem('pnd_sources_version', '7');
+    localStorage.setItem('pnd_sources', JSON.stringify(sources));
+}</code></pre>
+
+            <h3>4. Google News XML Fallbacks</h3>
+            <p>Feeds generated by Google News queries feature unique parameters that break generic JSON converters. When processing Google XML, our parser uses a native browser `DOMParser` to extract raw elements, dynamically strips standard branding suffixes (e.g., matching site strings or corporate domain suffixes), and cleans HTML tags to yield readable headlines.</p>
+        </section>
+
+        <!-- SECTION 5: BUILD FLOW -->
+        <section id="build-flow">
+            <div class="eyebrow">Compilation Protocols</div>
+            <h2>Build & Bundle Flow</h2>
+            
+            <p>Because the app is designed to run seamlessly as an embedded module on Google Sites, the final production asset must exist as a **single, self-contained standalone HTML document** that houses all styling parameters, JS modules, and image assets inline.</p>
+
+            <div class="brand-card">
+                <h3>The Dual-Asset Layout Model</h3>
+                <p>The code is engineered using a modular, split-pane developer strategy. Styles are authored in `styles.css`, behaviors are handled inside `app.js` and `themes.js`, and local testing is handled on `index.html`. This keeps source control modifications clean, readable, and highly maintainable.</p>
+            </div>
+
+            <h3>Bundling `bundled_for_google_sites.html`</h3>
+            <p>To compile the modular sources into the standalone bundle, we inject the dependencies directly. The build process follows these steps:</p>
+
+            <ul class="brand-list">
+                <li><strong>HTML Skeleton:</strong> The layout structure of `index.html` is used as the foundational template.</li>
+                <li><strong>Style Inlining:</strong> The link tag `&lt;link rel="stylesheet" href="styles.css"&gt;` is replaced with a style tag containing the complete contents of `styles.css`.</li>
+                <li><strong>Script Inlining:</strong> Script source tags are parsed, and the exact production logic of both `themes.js` and `app.js` is embedded directly into bottom-aligned script blocks.</li>
+                <li><strong>Base64 Asset Encoding:</strong> UI images and favicons (like `favicon.png`) are converted into inline Base64 data strings to bypass file-path dependencies.</li>
+            </ul>
+
+            <div class="brand-callout">
+                <p><strong>Note on Embedding:</strong> Google Sites enforces a sandboxed container on custom HTML embeds, blocking external relative resource access. This is why compiling to `bundled_for_google_sites.html` is an absolute architectural requirement for production deployment.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 6: RELEASE FLOW -->
+        <section id="release-flow">
+            <div class="eyebrow">Deployment & Release</div>
+            <h2>Release & Git Deploy</h2>
+            
+            <p>PersonalNewsDesk leverages **GitHub Pages** to serve its source code and static interfaces to users at `https://sstart109.github.io/PersonalNewsDesk/`. Staging, testing, and production deployment must proceed via Git in a strict sequence.</p>
+
+            <div class="brand-card">
+                <h3>GitHub Pages Synchronization Flow</h3>
+                <p>Because there is no separate compilation server or automated action runner executing branch merges on the remote, every local modification to the core styles or logic must be fully bundled and pushed directly by the developer to ensure visual updates are instantly served to the web.</p>
+            </div>
+
+            <h3>Step-by-Step Release Protocol</h3>
+            <p>A junior engineer must always execute the following commands in the workspace root when committing changes:</p>
+
+            <pre><code># Step 1: Ensure code compilation is fully mirrored in bundled files
+# Step 2: Stage all updated files (app.js, styles.css, bundled_for_google_sites.html)
+git add .
+
+# Step 3: Commit with clear, atomic descriptive summaries
+git commit -m "Configure news desk feeds: clean gatewaypundit, bump config version to 7"
+
+# Step 4: Push to the main branch to trigger GitHub Pages static hosting updates
+git push origin main</code></pre>
+
+            <div class="brand-callout">
+                <p><strong>Critical Verification Rule:</strong> After pushing your updates, never assume deployment success based on local server states. You must open your mobile browser or private tab and directly test `https://sstart109.github.io/PersonalNewsDesk/` to confirm that the changes compile correctly and that all feed columns load without console exceptions.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 7: RELATED PRODUCTS -->
+        <section id="related-products">
+            <div class="eyebrow">IllumiLib Ecosystem</div>
+            <h2>OCR Capture Companion</h2>
+            
+            <p>The PersonalNewsDesk is a dedicated administrative dashboard and portal within the wider **IllumiLib Product Suite**. To understand how news harvesting coordinates with the wider company ecosystem, developers should familiarize themselves with our core OCR technologies.</p>
+
+            <div class="brand-card">
+                <h3>IllumiLib Capture Desktop Utility</h3>
+                <p>The **IllumiLib Capture** desktop application is a highly optimized companion tool designed to bridges physical volumes and the digital cloud. It captures live book pages via high-definition camera feeds, executes sub-pixel corrections, and routes processed layouts to our cloud SaaS OCR engine.</p>
+            </div>
+
+            <h3>OCR Layout Processing Workflow</h3>
+            <p>Our core text normalization engine operates as follows:</p>
+
+            <ul class="brand-list">
+                <li><strong>Hardware Capture:</strong> High-resolution optical arrays capture text geometries under irregular library lighting conditions (candlelight, direct lamps).</li>
+                <li><strong>De-skewing & Layout Analysis:</strong> Identifies double-page splits, removes human fingers holding page margins, and straightens curved text lines.</li>
+                <li><strong>Enterprise OCR Engine:</strong> Processes raw segments using state-of-the-art multi-lingual model classifiers, supporting historical character sets and non-Latin typography (such as Greek and Hebrew).</li>
+                <li><strong>Document Synthesis:</strong> Converts OCR segments into fully searchable, AI-queryable corpuses. Every single generated response features real-time, verified page-number citations, allowing serious researchers to quickly verify details against physical books.</li>
+            </ul>
+        </section>
+
+        <!-- SECTION 8: LICENSING -->
+        <section class="dark-cta" id="licensing">
+            <div class="eyebrow" style="color: var(--color-gold);">Legal Protections</div>
+            <h2>Legal & Licensing</h2>
+            
+            <p>All software assets, brand tokens, and design elements published under the IllumiLib identifier are strictly protected under international copyright conventions and custom end-user covenants.</p>
+
+            <div class="brand-callout" style="border-left-color: var(--color-gold); background-color: rgba(253, 246, 227, 0.05);">
+                <p style="font-family: var(--font-playfair); font-size: 1.25rem; font-style: italic; color: var(--color-beam); line-height: 1.5; margin-bottom: 0;">
+                    "IllumiLib Capture &copy; 2026 AI Accelerator LLC of Colorado. All rights reserved. This software is licensed for personal use and protected under applicable copyright law."
+                </p>
+            </div>
+
+            <h3>Core Licensing Terms</h3>
+            <p>Engineers modifying this codebase must adhere strictly to these compliance rules:</p>
+            
+            <ul class="brand-list">
+                <li><strong>Personal Use Restriction:</strong> The application resources, stylesheets, and custom algorithms are granted strictly for personal, non-commercial research and reference purposes.</li>
+                <li><strong>Copyright Integrity:</strong> All legal headers, copyright strings, version numbers, and developer tags must remain fully intact in both modular assets and compiled single-file bundles.</li>
+                <li><strong>Proprietary Design Tokens:</strong> The unique color system, bookish styling metrics, and gold asterisk visual markers are proprietary brand tokens and must not be used on external commercial SaaS platforms without express written consent.</li>
+            </ul>
+
+            <h3 style="margin-top: 3rem;">AI Accelerator LLC of Colorado</h3>
+            <p style="margin-bottom: 0;">Established to empower scholars, researchers, and professional builders through the intersection of traditional study and advanced machine intelligence. For licensing extensions, compliance audits, or permissions inquiries, please contact our technical relations desk.</p>
+        </section>
+
+    </main>
+
+    <!-- UI INTERACTIVE SCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Mobile Navigation Drawer Control ---
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menuToggle');
+            
+            menuToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sidebar.classList.toggle('open');
+                menuToggle.textContent = sidebar.classList.contains('open') ? 'Close Menu' : 'Navigation';
+            });
+            
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 992 && sidebar.classList.contains('open')) {
+                    if (!sidebar.contains(e.target) && e.target !== menuToggle) {
+                        sidebar.classList.remove('open');
+                        menuToggle.textContent = 'Navigation';
+                    }
+                }
+            });
+
+            // --- Scroll-Spy Active Menu Highlighter ---
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.sidebar-nav a');
+            
+            window.addEventListener('scroll', () => {
+                let currentSectionId = '';
+                
+                // Add a small offset (100px) to make triggering feel snappy and natural
+                const scrollPosition = window.scrollY + 120;
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    
+                    if (scrollPosition >= sectionTop && scrollPosition < (sectionTop + sectionHeight)) {
+                        currentSectionId = section.getAttribute('id');
+                    }
+                });
+                
+                // Fallback for reaching the exact bottom of the page
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 5) {
+                    currentSectionId = sections[sections.length - 1].getAttribute('id');
+                }
+                
+                if (currentSectionId) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${currentSectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+
+            // Smooth scroll anchor behavior
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    if (targetSection) {
+                        // Close mobile drawer if open
+                        if (window.innerWidth <= 992) {
+                            sidebar.classList.remove('open');
+                            menuToggle.textContent = 'Navigation';
+                        }
+                        
+                        // Scroll to section smoothly
+                        window.scrollTo({
+                            top: targetSection.offsetTop - 50,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
