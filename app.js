@@ -219,7 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'dailycaller', name: 'The Daily Caller', url: 'https://feeds.feedburner.com/dailycaller', enabled: true, column: 1, maxStories: 7 },
         
         { id: 'breitbart', name: 'Breitbart', url: 'https://feeds.feedburner.com/breitbart', enabled: true, column: 2, maxStories: 7 },
-        { id: 'gatewaypundit', name: 'The Gateway Pundit', url: 'https://www.thegatewaypundit.com/feed', enabled: true, column: 2, maxStories: 7 },
         { id: 'townhall', name: 'Townhall', url: 'https://www.bing.com/news/search?q=site%3Atownhall.com&format=rss', enabled: true, column: 2, maxStories: 7 },
         
         { id: 'washingtonexaminer', name: 'Washington Examiner Politics', url: 'https://www.washingtonexaminer.com/tag/politics/feed/', enabled: true, column: 3, maxStories: 7 },
@@ -232,9 +231,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let sources = JSON.parse(localStorage.getItem('pnd_sources'));
     let sourcesVersion = localStorage.getItem('pnd_sources_version');
     
-    if (!sources || sourcesVersion !== '2') {
-        sources = defaultSources;
-        localStorage.setItem('pnd_sources_version', '2');
+    if (!sources || sourcesVersion !== '7') {
+        if (!sources) {
+            sources = defaultSources;
+        } else {
+            // Remove Gateway Pundit completely from active sources
+            sources = sources.filter(src => src.id !== 'gatewaypundit');
+        }
+        localStorage.setItem('pnd_sources_version', '7');
         localStorage.setItem('pnd_sources', JSON.stringify(sources));
     }
 
@@ -604,6 +608,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         if (!success) source.error = true;
+
+        // Clean up Google News style title suffixes (e.g. "Headline - Source Name" or "Headline - domain.com")
+        parsedArticles.forEach(article => {
+            if (article.title) {
+                const sourceSuffix = ` - ${source.name}`;
+                if (article.title.toLowerCase().endsWith(sourceSuffix.toLowerCase())) {
+                    article.title = article.title.substring(0, article.title.length - sourceSuffix.length).trim();
+                } else {
+                    try {
+                        const urlObj = new URL(source.url);
+                        let domain = urlObj.hostname;
+                        if (domain.startsWith('news.google.com')) {
+                            const siteMatch = source.url.match(/q=site:([^&]+)/);
+                            if (siteMatch && siteMatch[1]) {
+                                domain = siteMatch[1];
+                            }
+                        }
+                        domain = domain.replace('www.', '');
+                        const domainSuffix = ` - ${domain}`;
+                        if (article.title.toLowerCase().endsWith(domainSuffix.toLowerCase())) {
+                            article.title = article.title.substring(0, article.title.length - domainSuffix.length).trim();
+                        }
+                    } catch (e) {}
+                }
+            }
+        });
+
         return parsedArticles;
     }
 
